@@ -2,6 +2,15 @@
 
 ![GitHub All Releases](https://img.shields.io/github/downloads/StevenJDH/AWS-URL-Shortener/total)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/StevenJDH/AWS-URL-Shortener?include_prereleases)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f9fddbe49c454a1ab9196b0ef6351aa3)](https://app.codacy.com/gh/StevenJDH/AWS-URL-Shortener/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f9fddbe49c454a1ab9196b0ef6351aa3)](https://app.codacy.com/gh/StevenJDH/AWS-URL-Shortener/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
+[![Sonar Violations (long format)](https://img.shields.io/sonar/violations/StevenJDH_AWS-URL-Shortener?format=long&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/dashboard?id=StevenJDH_AWS-URL-Shortener)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
 ![Maintenance](https://img.shields.io/maintenance/yes/2023)
 ![GitHub](https://img.shields.io/github/license/StevenJDH/AWS-URL-Shortener)
 

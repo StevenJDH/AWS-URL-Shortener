@@ -40,6 +40,37 @@ Releases: [https://github.com/StevenJDH/AWS-URL-Shortener/releases](https://gith
 * [Terraform 1.30.x](https://developer.hashicorp.com/terraform/downloads?product_intent=terraform) or newer installed.
 * Sufficient permissions in AWS to run everything.
 
+## Deploying the backend via Terraform
+Included is a Terraform project for Infrastructure as Code (IaC) to quickly create a working backend environment. It mainly creates some S3 buckets with test files and the needed DNS records to make this work with the selected domain. To begin, perform the following steps:
+
+1. Change to the `Terraform` directory, and initialize the project:
+   
+   ```bash
+   terraform init
+   ```
+
+2. Create a plan to see what AWS resources will be created:
+
+   ```bash
+   terraform plan -var domain=my.link -out backend.tfplan
+   ```
+
+3. Create the resources based on the plan:
+
+   ```bash
+   terraform apply "backend.tfplan"
+   ```
+
+4. To remove the backend, run destroy using the same variable as before:
+
+   ```bash
+   terraform destroy -var domain=my.link
+   ```
+
+The `domain` variable controls what domain will be used for the URL shortening service. In other words, make sure to replace `my.link` with the needed one.
+
+To test if the backend is set up correctly, open a browser, and enter the configured domain, like `my.link`. A welcome page should appear if it works. Next, test if shortlinks are being redirected by navigating to `<your-domain>/test`. If this redirects to google.com, then the setup is working. Finally, perform the same tests by adding the `www` subdomain to everything to ensure the same results.
+
 ## CLI script installation
 Extract the CLI script that is compatible with the operating system it will run on, and place it into a folder. Add the folder location where the script is installed to the system PATH. After, type `setx AWS_URL_SHORTENER my.link` for Windows, or `export AWS_URL_SHORTENER my.link` for Linux and macOS, to tell the CLI script what Domain/S3 Bucket to use for the shortlinks. For Windows, the console may need to be restarted for the changes to take effect. Finally, type `shortlink version` to confirm the CLI script is working.
 

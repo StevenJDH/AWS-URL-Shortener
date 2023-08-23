@@ -18,6 +18,8 @@ AWS URL Shortener is a project that shows how to create a URL shortening service
 
 Development is still ongoing with the Terraform project and Bash CLI script, so a first release will be available as soon as time permits.
 
+![Infra Diagram](infra-diagram.png "Diagram")
+
 [![Buy me a coffee](https://img.shields.io/static/v1?label=Buy%20me%20a&message=coffee&color=important&style=flat&logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com/stevenjdh)
 
 Releases: [https://github.com/StevenJDH/AWS-URL-Shortener/releases](https://github.com/StevenJDH/AWS-URL-Shortener/releases)

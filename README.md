@@ -14,9 +14,7 @@
 ![Maintenance](https://img.shields.io/maintenance/yes/2023)
 ![GitHub](https://img.shields.io/github/license/StevenJDH/AWS-URL-Shortener)
 
-AWS URL Shortener is a project that shows how to create a URL shortening service using just AWS S3 Static Website Hosting and Route 53. This approach is fully serverless and does not require any coding. Platform specific CLI scripts (AWS CLI wrappers) are provided to make managing the shortlinks easier. The service works by using a little known feature in S3 called Object Redirection, which consists of setting some system-defined metadata on an empty object to redirect requests to a website configured as the target destination. Since these objects hold 0 bytes, the overall cost for this project is near 0 per month excluding the already low cost of a hosted zone in Route 53.
-
-Development is still ongoing with the Terraform project and Bash CLI script, so a first release will be available as soon as time permits.
+AWS URL Shortener is a project that shows how to create a [Vanity URL shortening service](https://www.seobility.net/en/wiki/Vanity_URL) using just AWS S3 Static Website Hosting and Route 53. This approach is fully serverless and does not require any coding. Platform specific CLI scripts (AWS CLI wrappers) are provided to make managing the shortlinks easier. The service works by using a little known feature in S3 called Object Redirection, which consists of setting some system-defined metadata on an empty object to redirect requests to a website configured as the target destination. Since these objects hold 0 bytes, the overall cost for this project is near 0 per month excluding the already low cost of a hosted zone in Route 53.
 
 ![Infra Diagram](infra-diagram.png "Diagram")
 
@@ -72,7 +70,7 @@ The `domain` variable controls what domain will be used for the URL shortening s
 To test if the backend is set up correctly, open a browser, and enter the configured domain, like `my.link`. A welcome page should appear if it works. Next, test if shortlinks are being redirected by navigating to `<your-domain>/test`. If this redirects to google.com, then the setup is working. Finally, perform the same tests by adding the `www` subdomain to everything to ensure the same results.
 
 ## CLI script installation
-Extract the CLI script that is compatible with the operating system it will run on, and place it into a folder. Add the folder location where the script is installed to the system PATH. After, type `setx AWS_URL_SHORTENER my.link` for Windows, or `export AWS_URL_SHORTENER my.link` for Linux and macOS, to tell the CLI script what Domain/S3 Bucket to use for the shortlinks. For Windows, the console may need to be restarted for the changes to take effect. Finally, type `shortlink version` to confirm the CLI script is working.
+Extract the CLI script that is compatible with the operating system it will run on, and place it into a folder. Add the folder location where the script is installed to the system PATH. After, type `setx AWS_URL_SHORTENER my.link` for Windows, or `export AWS_URL_SHORTENER=my.link` for Linux and macOS, to tell the CLI script what Domain/S3 Bucket to use for the shortlinks. For Windows, the console may need to be restarted for the changes to take effect, and for Linux and macOS, run `chmod +x shortlink` to add the execution bit if needed. Finally, type `shortlink version` to confirm the CLI script is working.
 
 ## Command line usage
 Below is the usage information that is needed to manage the shortlinks via the command line.

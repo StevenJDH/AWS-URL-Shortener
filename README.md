@@ -2,7 +2,7 @@
 
 ![GitHub All Releases](https://img.shields.io/github/downloads/StevenJDH/AWS-URL-Shortener/total)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/StevenJDH/AWS-URL-Shortener?include_prereleases)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f9fddbe49c454a1ab9196b0ef6351aa3)](https://app.codacy.com/gh/StevenJDH/AWS-URL-Shortener/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f9fddbe49c454a1ab9196b0ef6351aa3)](https://app.codacy.com/gh/StevenJDH/AWS-URL-Shortener/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f9fddbe49c454a1ab9196b0ef6351aa3)](https://app.codacy.com/gh/StevenJDH/AWS-URL-Shortener/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)

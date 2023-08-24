@@ -22,10 +22,10 @@ title AWS URL Shortener
 echo.
 
 if not defined AWS_URL_SHORTENER (
-    echo Not configured. Please use 'setx AWS_URL_SHORTENER my.link' first, and try again.
+    echo Not configured. Please use 'setx AWS_URL_SHORTENER my.link' first, and try again. 1>&2
     GOTO end
 ) else if not exist %USERPROFILE%\.aws\credentials (
-    echo AWS CLI not installed or configured.
+    echo AWS CLI not installed or configured. 1>&2
     GOTO end
 )
 
@@ -60,39 +60,35 @@ type nul > %temp%\%shortlink%
 aws s3 cp %temp%\%shortlink% s3://%__S3_BUCKET%/ --website-redirect %destination%
 if /i "%expires%"=="expires" (
     echo Tagging shortlink for expiration...
-    aws s3api put-object-tagging --bucket %__S3_BUCKET% --key %shortlink% --tagging TagSet=[{Key=expire,Value=true}]
+    aws s3api put-object-tagging --bucket %__S3_BUCKET% --key %shortlink% --tagging "TagSet=[{Key=expire,Value=true}]"
 )
-call :describe_func %shortlink%
+call :func_display_details_for %shortlink%
 del %temp%\%shortlink%
-call :error_check_func
 GOTO end
 
 :remove
 if not defined shortlink GOTO usage
 aws s3 rm s3://%__S3_BUCKET%/%shortlink%
-call :error_check_func
 GOTO end
 
 :list
 aws s3api list-objects-v2 ^
     --bucket %__S3_BUCKET% ^
-    --query "Contents[? Size==`0` && !(ends_with(Key, '/'))].{Shortlinks: Key, UTCLastModified: LastModified}" ^
+    --query "Contents[? Size==`0` && !(ends_with(Key, `/`))].{Shortlinks: Key, UTCLastModified: LastModified}" ^
     --output table
-call :error_check_func
 GOTO end
 
 :describe
 if not defined shortlink GOTO usage
-call :describe_func %shortlink%
-call :error_check_func
+call :func_display_details_for %shortlink%
 GOTO end
 
-:describe_func
+:func_display_details_for
 :: Using JMESPath to make output consistent when there is an expiration or not set.
 aws s3api head-object ^
     --bucket %__S3_BUCKET% ^
     --key %~1 ^
-    --query "[{Property: 'Shortlink', Value: join('',['%__S3_BUCKET%/','%~1'])}, {Property: 'Destination', Value: WebsiteRedirectLocation}, {Property: 'Expiration', Value: Expiration || 'Never'}, {Property: 'UTCLastModified ', Value: LastModified}]" ^
+    --query "[{Property: 'Shortlink', Value: join('', ['%__S3_BUCKET%/','%~1'])}, {Property: 'Destination', Value: WebsiteRedirectLocation}, {Property: 'Expiration', Value: Expiration || 'Never'}, {Property: 'UTCLastModified ', Value: LastModified}]" ^
     --output table
 exit /B
 
@@ -104,11 +100,11 @@ GOTO end
 echo Usage: %__BAT_NAME% OPERATION shortlink_id destination_url [expires]
 echo.
 echo Operation:
-echo  create     Creates or update a shortlink using both required parameters.
-echo  remove     Removes an existing shortlink using first parameter only.
-echo  list       Lists the existing shortlinks.
-echo  describe   Describes a shortlink's configuration.
-echo  version    Displays the version of the script.
+echo   create     Creates or update a shortlink using both required parameters.
+echo   remove     Removes an existing shortlink using first parameter only.
+echo   list       Lists the existing shortlinks.
+echo   describe   Describes a shortlink's configuration.
+echo   version    Displays the version of the script.
 echo.
 echo Examples:
 echo   %__BAT_NAME% create foobar https://www.google.com
@@ -119,11 +115,9 @@ GOTO end
 
 :end
 ENDLOCAL
-exit /B %ERRORLEVEL%
-
-:error_check_func
 if %ERRORLEVEL% EQU 0 (
     echo Operation completed successfully.
 ) else (
-    echo Operation encountered errors.
+    echo Operation encountered errors. 1>&2
 )
+exit /B %ERRORLEVEL%

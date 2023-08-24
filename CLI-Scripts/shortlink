@@ -1,0 +1,145 @@
+#!/bin/bash
+
+# This file is part of AWS URL Shortener <https://github.com/StevenJDH/AWS-URL-Shortener>.
+# Copyright (C) 2023 Steven Jenkins De Haro.
+#
+# AWS URL Shortener is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# AWS URL Shortener is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with AWS URL Shortener.  If not, see <http://www.gnu.org/licenses/>.
+
+shopt -s nocasematch
+echo
+
+set_title() {
+    echo -ne "\033]0;$@\007"
+}
+
+completed() {
+    echo "Operation completed successfully."
+    exit 0
+}
+
+throw() {
+    echo "Operation encountered errors." >&2
+    exit $1
+}
+
+decide_tagging_for() {
+    if [[ "$2" == 'expires' ]]; then
+        echo "Tagging shortlink for expiration..."
+        aws s3api put-object-tagging --bucket $__S3_BUCKET --key $1 --tagging 'TagSet=[{Key=expire,Value=true}]'
+        return $?
+    else
+        return 0
+    fi
+}
+
+display_details_for() {
+    # Using JMESPath to make output consistent when there is an expiration or not set.
+    aws s3api head-object \
+        --bucket $__S3_BUCKET \
+        --key $1 \
+        --query "[{Property: 'Shortlink', Value: join('', ['$__S3_BUCKET/','$1'])}, {Property: 'Destination', Value: WebsiteRedirectLocation}, {Property: 'Expiration', Value: Expiration || 'Never'}, {Property: 'UTCLastModified ', Value: LastModified}]" \
+        --output table
+    return $?
+}
+
+create() {
+    [[ -z "$shortlink" || -z "$destination" ]] && usage
+    touch /tmp/$shortlink && \
+    aws s3 cp /tmp/$shortlink s3://$__S3_BUCKET/ --website-redirect $destination && \
+    decide_tagging_for $shortlink $expires && \
+    display_details_for $shortlink && \
+    (rm /tmp/$shortlink; completed) || (err=$?; rm /tmp/$shortlink; (throw $err))
+}
+
+remove() {
+    [[ -z "$shortlink" ]] && usage
+    aws s3 rm s3://$__S3_BUCKET/$shortlink && completed || throw $?
+}
+
+list() {
+    aws s3api list-objects-v2 \
+        --bucket $__S3_BUCKET \
+        --query 'Contents[? Size==`0` && !(ends_with(Key, `/`))].{Shortlinks: Key, UTCLastModified: LastModified}' \
+        --output table && completed || throw $?
+}
+
+describe() {
+    [[ -z "$shortlink" ]] && usage
+    display_details_for $shortlink && completed || throw $?
+}
+
+version() {
+    echo "AWS URL Shortener v$__VERSION"
+    exit 0
+}
+
+usage() {
+    cat <<- EOF
+Usage: $__SH_NAME OPERATION shortlink_id destination_url [expires]
+
+Operation:
+  create     Creates or update a shortlink using both required parameters.
+  remove     Removes an existing shortlink using first parameter only.
+  list       Lists the existing shortlinks.
+  describe   Describes a shortlink's configuration.
+  version    Displays the version of the script.
+
+Examples:
+  $__SH_NAME create foobar https://www.google.com
+  $__SH_NAME create foobar https://www.google.com expires
+  $__SH_NAME describe foobar
+  $__SH_NAME remove foobar
+EOF
+    exit 1
+}
+
+set_title AWS URL Shortener
+
+if [[ -z "$AWS_URL_SHORTENER" ]]; then
+    echo "Not configured. Please use 'export AWS_URL_SHORTENER=my.link' first, and try again." >&2
+    exit 1
+elif [[ -f "~/.aws/credentials" ]]; then
+    echo "AWS CLI not installed or configured." >&2
+    exit 1
+fi
+
+__S3_BUCKET=$AWS_URL_SHORTENER
+__VERSION=1.0.0
+__SH_NAME=$(basename "$0")
+
+operation=$1
+shortlink=$2
+destination=$3
+expires=$4
+
+case $operation in
+    create)
+        create
+        ;;
+    remove)
+        remove
+        ;;
+    list)
+        list
+        ;;
+    describe)
+        describe
+        ;;
+    version)
+        version
+        ;;
+    *)
+        usage
+        ;;
+esac

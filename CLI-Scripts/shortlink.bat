@@ -23,10 +23,10 @@ echo.
 
 if not defined AWS_URL_SHORTENER (
     echo Not configured. Please use 'setx AWS_URL_SHORTENER my.link' first, and try again. 1>&2
-    GOTO end
+    exit /B %ERRORLEVEL%
 ) else if not exist %USERPROFILE%\.aws\credentials (
     echo AWS CLI not installed or configured. 1>&2
-    GOTO end
+    exit /B %ERRORLEVEL%
 )
 
 set __S3_BUCKET=%AWS_URL_SHORTENER%
@@ -55,52 +55,58 @@ if /i "%operation%"=="create" (
 :create
 if not defined shortlink GOTO usage
 if not defined destination GOTO usage
-type nul > %temp%\%shortlink%
-:: Not using 'type nul | aws s3 cp -' because it hides the subprocess output.
-aws s3 cp %temp%\%shortlink% s3://%__S3_BUCKET%/ --website-redirect %destination%
-if /i "%expires%"=="expires" (
+:: Adding Delayed Expansion here because it conflicts with JMESPath used in list operation.
+SETLOCAL EnableDelayedExpansion
+type nul > "%temp%\%shortlink%" && ^
+aws s3 cp "%temp%\%shortlink%" s3://%__S3_BUCKET%/ --website-redirect %destination% && ^
+call :func_decide_tagging_for %shortlink% %expires% && ^
+call :func_display_details_for %shortlink% && ^
+del "%temp%\%shortlink%" && ^
+call :func_completed || (set /A err=!ERRORLEVEL! && del "%temp%\%shortlink%" 2>nul && call :func_throw)
+exit /B %err%
+
+:func_decide_tagging_for
+if /i "%~2"=="expires" (
     echo Tagging shortlink for expiration...
-    aws s3api put-object-tagging --bucket %__S3_BUCKET% --key %shortlink% --tagging "TagSet=[{Key=expire,Value=true}]"
+    aws s3api put-object-tagging --bucket "%__S3_BUCKET%" --key "%~1" --tagging "TagSet=[{Key=expire,Value=true}]"
 )
-call :func_display_details_for %shortlink%
-del %temp%\%shortlink%
-GOTO end
+exit /B
 
 :remove
 if not defined shortlink GOTO usage
-aws s3 rm s3://%__S3_BUCKET%/%shortlink%
-GOTO end
+aws s3 rm s3://%__S3_BUCKET%/%shortlink% && call :func_completed || call :func_throw
+exit /B %ERRORLEVEL%
 
 :list
 aws s3api list-objects-v2 ^
-    --bucket %__S3_BUCKET% ^
-    --query "Contents[? Size==`0` && !(ends_with(Key, `/`))].{Shortlinks: Key, UTCLastModified: LastModified}" ^
-    --output table
-GOTO end
+    --bucket "%__S3_BUCKET%" ^
+    --query "Contents[? Size==`0` && !(ends_with(Key, `/`))].{Shortlinks: Key,UTCLastModified: LastModified}" ^
+    --output table && call :func_completed || call :func_throw
+exit /B %ERRORLEVEL%
 
 :describe
 if not defined shortlink GOTO usage
-call :func_display_details_for %shortlink%
-GOTO end
+call :func_display_details_for %shortlink% && call :func_completed || call :func_throw
+exit /B %ERRORLEVEL%
 
 :func_display_details_for
 :: Using JMESPath to make output consistent when there is an expiration or not set.
 aws s3api head-object ^
-    --bucket %__S3_BUCKET% ^
-    --key %~1 ^
+    --bucket "%__S3_BUCKET%" ^
+    --key "%~1" ^
     --query "[{Property: 'Shortlink', Value: join('', ['%__S3_BUCKET%/','%~1'])}, {Property: 'Destination', Value: WebsiteRedirectLocation}, {Property: 'Expiration', Value: Expiration || 'Never'}, {Property: 'UTCLastModified ', Value: LastModified}]" ^
     --output table
 exit /B
 
 :version
 echo AWS URL Shortener v%__VERSION%
-GOTO end
+exit /B 0
 
 :usage
 echo Usage: %__BAT_NAME% OPERATION shortlink_id destination_url [expires]
 echo.
 echo Operation:
-echo   create     Creates or update a shortlink using both required parameters.
+echo   create     Creates or updates a shortlink using both required parameters.
 echo   remove     Removes an existing shortlink using first parameter only.
 echo   list       Lists the existing shortlinks.
 echo   describe   Describes a shortlink's configuration.
@@ -111,13 +117,12 @@ echo   %__BAT_NAME% create foobar https://www.google.com
 echo   %__BAT_NAME% create foobar https://www.google.com expires
 echo   %__BAT_NAME% describe foobar
 echo   %__BAT_NAME% remove foobar
-GOTO end
+exit /B 1
 
-:end
-ENDLOCAL
-if %ERRORLEVEL% EQU 0 (
-    echo Operation completed successfully.
-) else (
-    echo Operation encountered errors. 1>&2
-)
-exit /B %ERRORLEVEL%
+:func_completed
+echo Operation completed successfully.
+exit /B
+
+:func_throw
+echo Operation encountered errors. 1>&2
+exit /B

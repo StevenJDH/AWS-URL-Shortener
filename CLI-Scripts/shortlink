@@ -36,7 +36,7 @@ throw() {
 decide_tagging_for() {
     if [[ "$2" == 'expires' ]]; then
         echo "Tagging shortlink for expiration..."
-        aws s3api put-object-tagging --bucket $__S3_BUCKET --key $1 --tagging 'TagSet=[{Key=expire,Value=true}]'
+        aws s3api put-object-tagging --bucket "$__S3_BUCKET" --key "$1" --tagging 'TagSet=[{Key=expire,Value=true}]'
         return $?
     else
         return 0
@@ -46,37 +46,38 @@ decide_tagging_for() {
 display_details_for() {
     # Using JMESPath to make output consistent when there is an expiration or not set.
     aws s3api head-object \
-        --bucket $__S3_BUCKET \
-        --key $1 \
-        --query "[{Property: 'Shortlink', Value: join('', ['$__S3_BUCKET/','$1'])}, {Property: 'Destination', Value: WebsiteRedirectLocation}, {Property: 'Expiration', Value: Expiration || 'Never'}, {Property: 'UTCLastModified ', Value: LastModified}]" \
+        --bucket "$__S3_BUCKET" \
+        --key "$1" \
+        --query "[{Property: 'Shortlink', Value: join('', ['"$__S3_BUCKET/"','"$1"'])}, {Property: 'Destination', Value: WebsiteRedirectLocation}, {Property: 'Expiration', Value: Expiration || 'Never'}, {Property: 'UTCLastModified ', Value: LastModified}]" \
         --output table
     return $?
 }
 
 create() {
     [[ -z "$shortlink" || -z "$destination" ]] && usage
-    touch /tmp/$shortlink && \
-    aws s3 cp /tmp/$shortlink s3://$__S3_BUCKET/ --website-redirect $destination && \
-    decide_tagging_for $shortlink $expires && \
-    display_details_for $shortlink && \
-    (rm /tmp/$shortlink; completed) || (err=$?; rm /tmp/$shortlink; (throw $err))
+    touch "/tmp/$shortlink" && \
+    aws s3 cp "/tmp/$shortlink" "s3://$__S3_BUCKET/" --website-redirect "$destination" && \
+    decide_tagging_for "$shortlink" "$expires" && \
+    display_details_for "$shortlink" && \
+    rm "/tmp/$shortlink" && \
+    completed || (err=$?; rm "/tmp/$shortlink"; (throw $err))
 }
 
 remove() {
     [[ -z "$shortlink" ]] && usage
-    aws s3 rm s3://$__S3_BUCKET/$shortlink && completed || throw $?
+    aws s3 rm "s3://$__S3_BUCKET/$shortlink" && completed || throw $?
 }
 
 list() {
     aws s3api list-objects-v2 \
-        --bucket $__S3_BUCKET \
+        --bucket "$__S3_BUCKET" \
         --query 'Contents[? Size==`0` && !(ends_with(Key, `/`))].{Shortlinks: Key, UTCLastModified: LastModified}' \
         --output table && completed || throw $?
 }
 
 describe() {
     [[ -z "$shortlink" ]] && usage
-    display_details_for $shortlink && completed || throw $?
+    display_details_for "$shortlink" && completed || throw $?
 }
 
 version() {
@@ -89,7 +90,7 @@ usage() {
 Usage: $__SH_NAME OPERATION shortlink_id destination_url [expires]
 
 Operation:
-  create     Creates or update a shortlink using both required parameters.
+  create     Creates or updates a shortlink using both required parameters.
   remove     Removes an existing shortlink using first parameter only.
   list       Lists the existing shortlinks.
   describe   Describes a shortlink's configuration.
@@ -104,7 +105,7 @@ EOF
     exit 1
 }
 
-set_title AWS URL Shortener
+set_title "AWS URL Shortener"
 
 if [[ -z "$AWS_URL_SHORTENER" ]]; then
     echo "Not configured. Please use 'export AWS_URL_SHORTENER=my.link' first, and try again." >&2
@@ -114,16 +115,16 @@ elif [[ -f "~/.aws/credentials" ]]; then
     exit 1
 fi
 
-__S3_BUCKET=$AWS_URL_SHORTENER
-__VERSION=1.0.0
-__SH_NAME=$(basename "$0")
+__S3_BUCKET="$AWS_URL_SHORTENER"
+__VERSION="1.0.0"
+__SH_NAME="$(basename "$0")"
 
-operation=$1
-shortlink=$2
-destination=$3
-expires=$4
+operation="$1"
+shortlink="$2"
+destination="$3"
+expires="$4"
 
-case $operation in
+case "$operation" in
     create)
         create
         ;;

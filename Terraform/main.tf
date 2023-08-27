@@ -28,8 +28,8 @@ module "s3-root-domain-bucket" {
 module "s3-www-subdomain-bucket" {
   source = "./modules/aws-url-shortener"
 
-  domain         = "www.${var.domain}"
-  is_subdomain   = true
+  domain       = "www.${var.domain}"
+  is_subdomain = true
 
   tags = local.tags
 }

@@ -25,7 +25,7 @@ locals {
       Effect    = "Allow"
       Action    = "s3:GetObject"
       Principal = "*"
-      Resource = "${module.s3-static-hosting-bucket.arn}/*"
+      Resource  = "${module.s3-static-hosting-bucket.arn}/*"
     },
   ]
 }

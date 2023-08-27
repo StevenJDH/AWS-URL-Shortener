@@ -17,6 +17,7 @@
  */
 
 module "s3-static-hosting-bucket" {
+  # tflint-ignore: terraform_module_pinned_source
   source = "github.com/StevenJDH/Terraform-Modules//aws/s3?ref=main"
 
   bucket_name             = var.domain
@@ -30,9 +31,9 @@ module "s3-static-hosting-bucket" {
     {
       rule_name            = "expired-cleanup"
       enable_rule          = true
-      expiration_days      = 14
+      expiration_days      = var.expiration_days
       filter_size_lt_bytes = 1
-      filter_tags          = {
+      filter_tags = {
         expire = "true"
       }
     },

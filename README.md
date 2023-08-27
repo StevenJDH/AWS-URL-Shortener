@@ -1,5 +1,6 @@
 # AWS URL Shortener
 
+[![build](https://github.com/StevenJDH/AWS-URL-Shortener/actions/workflows/terraform-tflint-workflow.yml/badge.svg?branch=main)](https://github.com/StevenJDH/AWS-URL-Shortener/actions/workflows/terraform-tflint-workflow.yml)
 ![GitHub All Releases](https://img.shields.io/github/downloads/StevenJDH/AWS-URL-Shortener/total)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/StevenJDH/AWS-URL-Shortener?include_prereleases)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/f9fddbe49c454a1ab9196b0ef6351aa3)](https://app.codacy.com/gh/StevenJDH/AWS-URL-Shortener/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)

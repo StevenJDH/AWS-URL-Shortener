@@ -54,7 +54,7 @@ jobs:
     - name: Terraform Format
       run: terraform fmt -check -diff -recursive
 
-    # Checks that verify whether a configuration is syntactically valid and internally consistent.
+    # Checks whether configuration is syntactically valid and internally consistent.
     - name: Terraform Validate
       run: terraform validate
 

@@ -61,7 +61,7 @@ resource "aws_s3_bucket_website_configuration" "this" {
   dynamic "redirect_all_requests_to" {
     for_each = var.is_subdomain ? [true] : []
     content {
-      host_name = var.domain
+      host_name = local.root_domain
       protocol  = "http"
     }
   }

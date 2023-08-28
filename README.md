@@ -112,6 +112,30 @@ Operation completed successfully.
 
 > 📝**NOTE:** All files and folders not related to shortlinks will be ignored by the CLI script. This was done so that a static website can also be hosted in the same bucket as the shortlinks to extend support for a UI, or to allow for any other need.
 
+## Pull requests
+Pull requests will trigger automatic checks for any modified Terraform files before they can be merged into `main`. To avoid issues, run the same checks locally from the root of the Terraform folder before submitting a PR.
+
+### Manual Terraform checks
+
+```bash
+terraform init -backend=false
+terraform fmt -check -diff -recursive
+terraform fmt -recursive
+terraform validate
+```
+
+> 📝**NOTE:** If using Windows, the `-diff` may not work without additional setup. Use git bash instead, or run `choco install diffutils` as per [GNU DiffUtils for Windows](https://community.chocolatey.org/packages/diffutils#files).
+
+### Manual TFLint checks
+Install the needed CLI from [here](https://github.com/terraform-linters/tflint/releases/latest), or use `winget install TerraformLinters.tflint` if Windows, then run the following commands:
+
+```bash
+tflint --init --recursive
+tflint -f compact --recursive
+```
+
+> 📝**NOTE:** Any issues detected will have to be fixed manually.
+
 ## Disclaimer
 AWS URL Shortener is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 

@@ -55,12 +55,12 @@ display_details_for() {
 
 create() {
     [[ -z "$shortlink" || -z "$destination" ]] && usage
-    touch "/tmp/$shortlink" && \
-    aws s3 cp "/tmp/$shortlink" "s3://$__S3_BUCKET/" --website-redirect "$destination" && \
+    touch "${TMPDIR:=/tmp}/$shortlink" && \
+    aws s3 cp "$TMPDIR/$shortlink" "s3://$__S3_BUCKET/" --website-redirect "$destination" && \
     decide_tagging_for "$shortlink" "$expires" && \
     display_details_for "$shortlink" && \
-    rm "/tmp/$shortlink" && \
-    completed || (err=$?; rm "/tmp/$shortlink"; (throw $err))
+    rm "$TMPDIR/$shortlink" && \
+    completed || (err=$?; rm "$TMPDIR/$shortlink"; (throw $err))
 }
 
 remove() {

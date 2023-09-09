@@ -124,7 +124,7 @@ terraform fmt -recursive
 terraform validate
 ```
 
-> 📝**NOTE:** If using Windows, the `-diff` may not work without additional setup. Use git bash instead, or run `choco install diffutils` as per [GNU DiffUtils for Windows](https://community.chocolatey.org/packages/diffutils#files).
+> 📝**NOTE:** If using Windows, the `-diff` flag may not work without additional setup. Use git bash instead, or run `choco install diffutils` as per [GNU DiffUtils for Windows](https://community.chocolatey.org/packages/diffutils#files). Or drop the flag if it's too much trouble.
 
 ### Manual TFLint checks
 Install the needed CLI from [here](https://github.com/terraform-linters/tflint/releases/latest), or use `winget install TerraformLinters.tflint` if Windows, then run the following commands:

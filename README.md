@@ -78,7 +78,7 @@ Below is the usage information that is needed to manage the shortlinks via the c
 
     Usage: shortlink OPERATION shortlink_id destination_url [expires]
 
-    Options:
+    Operation:
       create     Creates or updates a shortlink using both required parameters.
       remove     Removes an existing shortlink using first parameter only.
       list       Lists the existing shortlinks.

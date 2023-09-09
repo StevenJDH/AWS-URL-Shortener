@@ -1,6 +1,7 @@
 ### My additional ignores ###
-/[Rr]esources
+/[Rr]esources/
 /*.wiki
+/[Ss]etups/
 
 ### Terraform ###
 # Local .terraform directories

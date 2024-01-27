@@ -97,8 +97,8 @@ Operation:
   version    Displays the version of the script.
 
 Examples:
-  $__SH_NAME create foobar https://www.google.com
-  $__SH_NAME create foobar https://www.google.com expires
+  $__SH_NAME create foobar "https://www.google.com"
+  $__SH_NAME create foobar "https://www.google.com" expires
   $__SH_NAME describe foobar
   $__SH_NAME remove foobar
 EOF

@@ -58,7 +58,7 @@ if not defined destination GOTO usage
 :: Adding Delayed Expansion here because it conflicts with JMESPath used in list operation.
 SETLOCAL EnableDelayedExpansion
 type nul > "%temp%\%shortlink%" && ^
-aws s3 cp "%temp%\%shortlink%" s3://%__S3_BUCKET%/ --website-redirect %destination% && ^
+aws s3 cp "%temp%\%shortlink%" s3://%__S3_BUCKET%/ --website-redirect "%destination%" && ^
 call :func_decide_tagging_for %shortlink% %expires% && ^
 call :func_display_details_for %shortlink% && ^
 del "%temp%\%shortlink%" && ^
@@ -113,8 +113,8 @@ echo   describe   Describes a shortlink's configuration.
 echo   version    Displays the version of the script.
 echo.
 echo Examples:
-echo   %__BAT_NAME% create foobar https://www.google.com
-echo   %__BAT_NAME% create foobar https://www.google.com expires
+echo   %__BAT_NAME% create foobar "https://www.google.com"
+echo   %__BAT_NAME% create foobar "https://www.google.com" expires
 echo   %__BAT_NAME% describe foobar
 echo   %__BAT_NAME% remove foobar
 exit /B 1

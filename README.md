@@ -12,7 +12,7 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=StevenJDH_AWS-URL-Shortener&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=StevenJDH_AWS-URL-Shortener)
-![Maintenance](https://img.shields.io/maintenance/yes/2023)
+![Maintenance](https://img.shields.io/maintenance/yes/2024)
 ![GitHub](https://img.shields.io/github/license/StevenJDH/AWS-URL-Shortener)
 
 AWS URL Shortener is a project that shows how to create a [Vanity URL Shortening Service](https://www.seobility.net/en/wiki/Vanity_URL) using just AWS S3 Static Website Hosting and Route 53. This approach is fully serverless and does not require any coding. Platform specific CLI scripts (AWS CLI wrappers) are provided to make managing the shortlinks easier. The service works by using a little known feature in S3 called Object Redirection, which consists of setting some system-defined metadata on an empty object to redirect requests to a website configured as the target destination. Since these objects hold 0 bytes, the overall cost for this project is near 0 per month excluding the already low cost of a hosted zone in Route 53.
@@ -86,8 +86,8 @@ Below is the usage information that is needed to manage the shortlinks via the c
       version    Displays the version of the script.
     
     Examples:
-      shortlink create foobar https://www.google.com
-      shortlink create foobar https://www.google.com expires
+      shortlink create foobar "https://www.google.com"
+      shortlink create foobar "https://www.google.com" expires
       shortlink describe foobar
       shortlink remove foobar
 
